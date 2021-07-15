@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     // location services. Create a new API key or access existing API keys from
     // your ArcGIS for Developers dashboard (https://links.esri.com/arcgis-api-keys).
 
-    const QString apiKey = QStringLiteral("AAPK05c21832bffa4ebeb3124f7675626326agihkmNj-k16uXI3ofFegE1jw1vkIT0sodgBis4gOWx6hhwuhEXSXXaEzwSOBaN0");// enter your own api key
+    const QString apiKey = QStringLiteral("API KEY");// enter your own api key
 
     if (apiKey.isEmpty())
     {
