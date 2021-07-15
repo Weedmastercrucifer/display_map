@@ -42,52 +42,7 @@ ApplicationWindow {
 
 
 
-//    Button {
-//        id: button3
-//        x: 822
-//        y: 428
-//        width: 155
-//        height: 63
-//        text: qsTr("Edit Mission File")
-//    }
 
-//    Button {
-//        id: button
-//        x: 822
-//        y: 0
-//        text: qsTr("Line Following ")
-//        onClicked: {if(loaderId.source == "")
-//                loaderId.source = "GeodesicOperations.qml"
-//            else
-//                loaderId.source = ""}
-
-
-//    }
-
-
-
-
-
-
-
-
-
-
-
-//    Button {
-//        id: button1
-//        x: 822
-//        y: 77
-//        text: qsTr("Altitude Control")
-
-//    }
-
-//    Button {
-//        id: button2
-//        x: 822
-//        y: 160
-//        text: qsTr("Camera Start/Stop")
-//    }
 
     menuBar: MenuBar {
         Menu{
