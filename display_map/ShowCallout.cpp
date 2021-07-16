@@ -3,6 +3,7 @@
 #endif // PCH_BUILD
 
 #include "ShowCallout.h"
+#include "CoordinateFormatter.h"
 
 #include "Map.h"
 #include "MapQuickView.h"
@@ -31,7 +32,7 @@ void ShowCallout::componentComplete()
   m_mapView = findChild<MapQuickView*>("mapView");
   m_mapView->setWrapAroundMode(WrapAroundMode::Disabled);
   // Create a map using the topographic basemap
-  m_map = new Map(BasemapStyle::ArcGISTopographic, this);
+  m_map = new Map(BasemapStyle::ArcGISImageryStandard, this);
   m_map->setInitialViewpoint(Viewpoint(Point(73.8021, 15.4561, SpatialReference::wgs84()),2e7));
 
   // Set map to map view
@@ -52,10 +53,12 @@ void ShowCallout::componentComplete()
         {
           // set callout position
           Point mapPoint(m_mapView->screenToLocation(mouseEvent.x(), mouseEvent.y()));
+          //QString m_coordinatesInDD = CoordinateFormatter::toLatitudeLongitude(mapPoint, LatitudeLongitudeFormat::DecimalDegrees, 6);
           m_mapView->calloutData()->setLocation(mapPoint);
 
           // set detail as coordinates formatted to decimal numbers with precision 2
-          m_mapView->calloutData()->setDetail("x: " + QString::number(mapPoint.x(), 'f', 2) + " y: " + QString::number(mapPoint.y(), 'f', 2));
+          //m_mapView->calloutData()->setDetail("x: " + QString::number(mapPoint.x(), 'f', 2) + " y: " + QString::number(mapPoint.y(), 'f', 2));
+          m_mapView->calloutData()->setDetail(CoordinateFormatter::toLatitudeLongitude(mapPoint, LatitudeLongitudeFormat::DecimalDegrees, 6));
           m_mapView->calloutData()->setVisible(true);
         }
       });
