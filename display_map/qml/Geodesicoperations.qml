@@ -2,6 +2,7 @@ import QtQuick 2.6
 import QtQuick.Controls 2.2
 import Esri.Samples 1.0
 import Esri.display_map 1.0
+import Esri.ArcGISRuntime.Toolkit 100.11
 
 GeodesicOperationsSample {
     id: rootRectangle
@@ -11,10 +12,35 @@ GeodesicOperationsSample {
 
 
     // add a mapView component
+
+
     MapView {
+        id:mapView
         anchors.fill: parent
         objectName: "mapView"
+
+
+
+
+         Callout {
+            id: callout
+            calloutData: mapView.calloutData // bind to the property that is exposed
+            accessoryButtonHidden: true
+            leaderPosition: leaderPositionEnum.Automatic
+
+        }
+
+
+
+
+
     }
+
+
+
+
+
+
 
 
     // display text for geodesic length
