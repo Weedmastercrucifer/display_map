@@ -3,7 +3,7 @@
 #endif // PCH_BUILD
 
 #include "GeodesicOperations.h"
-
+#include "ShowCallout.h"
 #include "Map.h"
 #include "MapQuickView.h"
 #include "GraphicsOverlay.h"
@@ -14,6 +14,7 @@
 #include "SpatialReference.h"
 #include "PolylineBuilder.h"
 #include "Point.h"
+#include "CoordinateFormatter.h"
 #include <QDebug>
 
 using namespace Esri::ArcGISRuntime;
@@ -28,6 +29,8 @@ void GeodesicOperations::init()
   // Register the map view for QML
   qmlRegisterType<MapQuickView>("Esri.Samples", 1, 0, "MapView");
   qmlRegisterType<GeodesicOperations>("Esri.Samples", 1, 0, "GeodesicOperationsSample");
+  qmlRegisterType<ShowCallout>("Esri.Samples", 1, 0, "ShowCalloutSample");
+  qmlRegisterUncreatableType<CalloutData>("Esri.Samples", 1, 0, "CalloutData", "CalloutData is an uncreatable type");
 
 }
 
@@ -84,8 +87,12 @@ void GeodesicOperations::componentComplete()
       const Point destination = GeometryEngine::project(clickedPoint, m_nycGraphic->geometry().spatialReference());
 
       // update the destination graphic
+      polylineBuilder->addPoint(destination);
+      Polyline polyline = polylineBuilder->toPolyline();
 
       m_destinationGraphic->setGeometry(destination);
+
+
 
 
 
@@ -95,11 +102,11 @@ void GeodesicOperations::componentComplete()
       //const QList<Point> points = {nycPoint, destination};
 
 
-       polylineBuilder->addPoint(destination);
+
 
        //QList<Point> points;
      // points.append(destination);
-       Polyline polyline = polylineBuilder->toPolyline();
+
 
 //       const int pointCollectionSize = pointCollection->size();
 //       qDebug()<< pointCollectionSize;
@@ -120,8 +127,28 @@ void GeodesicOperations::componentComplete()
 
       // calculate the path's geodetic length
       m_distanceText = QString::number(GeometryEngine::lengthGeodetic(pathGeometry, unitOfMeasurement, curveType), 'f', 2);
+
+//      if (m_mapView->calloutData()->isVisible())
+//        m_mapView->calloutData()->setVisible(false);
+//      else
+          //{
+            // set callout position
+
+          //}
       emit distanceTextChanged();
     });
+
+    connect(m_mapView, &MapQuickView::mouseMoved,this,[this](QMouseEvent& mouseEvent)
+    {
+            Point mapPoint(m_mapView->screenToLocation(mouseEvent.x(), mouseEvent.y()));
+            //QString m_coordinatesInDD = CoordinateFormatter::toLatitudeLongitude(mapPoint, LatitudeLongitudeFormat::DecimalDegrees, 6);
+            m_mapView->calloutData()->setLocation(mapPoint);
+
+            // set detail as coordinates formatted to decimal numbers with precision 2
+            //m_mapView->calloutData()->setDetail("x: " + QString::number(mapPoint.x(), 'f', 2) + " y: " + QString::number(mapPoint.y(), 'f', 2));
+            m_mapView->calloutData()->setDetail(CoordinateFormatter::toLatitudeLongitude(mapPoint, LatitudeLongitudeFormat::DecimalDegrees, 6));
+            m_mapView->calloutData()->setVisible(true);}
+    );
   }
 
 //Polyline GeodesicOperations::pointsToPolyline(const QList<Point>& points) //add const
