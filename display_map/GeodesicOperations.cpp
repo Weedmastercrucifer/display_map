@@ -78,10 +78,11 @@ void GeodesicOperations::componentComplete()
    //polylineBuilder->addPoint(nycPoint);
 
    // connect to mouse clicked signal
-    connect(m_mapView, &MapQuickView::mouseClicked,  this, [ this, polylineBuilder](QMouseEvent& mouseEvent)
+   //connect(m_mapView, &MapQuickView::mouseDoubleClicked, this, [this](QMouseEvent& event){  event.accept();});
+    connect(m_mapView, &MapQuickView::mouseDoubleClicked,  this, [ this, polylineBuilder,graphicsOverlay](QMouseEvent& mouseEvent)
    //connect(m_mapView, &MapQuickView::mouseClicked, this, [this](QMouseEvent& mouseEvent)
     {
-
+     mouseEvent.accept();
       // re-project the point to match the NYC graphic
       const Point clickedPoint = m_mapView->screenToLocation(mouseEvent.x(), mouseEvent.y());
       const Point destination = GeometryEngine::project(clickedPoint, m_nycGraphic->geometry().spatialReference());
@@ -89,8 +90,10 @@ void GeodesicOperations::componentComplete()
       // update the destination graphic
       polylineBuilder->addPoint(destination);
       Polyline polyline = polylineBuilder->toPolyline();
+      SimpleMarkerSymbol* pointMarkerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbolStyle::Circle, QColor("red"), 10, this);
+      graphicsOverlay->graphics()->append(new Graphic(destination,pointMarkerSymbol));
 
-      m_destinationGraphic->setGeometry(destination);
+      //m_destinationGraphic->setGeometry(destination);
 
 
 
@@ -138,8 +141,11 @@ void GeodesicOperations::componentComplete()
       emit distanceTextChanged();
     });
 
+    //connect(m_mapView, &MapQuickView::mouseMoved, this, [this](QMouseEvent& event){  event.accept();});
+
     connect(m_mapView, &MapQuickView::mouseMoved,this,[this](QMouseEvent& mouseEvent)
     {
+            mouseEvent.accept();
             Point mapPoint(m_mapView->screenToLocation(mouseEvent.x(), mouseEvent.y()));
             //QString m_coordinatesInDD = CoordinateFormatter::toLatitudeLongitude(mapPoint, LatitudeLongitudeFormat::DecimalDegrees, 6);
             m_mapView->calloutData()->setLocation(mapPoint);
